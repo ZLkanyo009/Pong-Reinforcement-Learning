@@ -1,4 +1,3 @@
-import sys
 import pygame
 import cv2
 import random
@@ -43,31 +42,23 @@ offset = 5     #板子速度
 score_font = pygame.font.Font(None,50) #创建font对象 50
 score_surf = score_font.render(str(score),1,(0,0,0))
 score_pos = [10,10]
-done = False #避免球再次出现，定义done变量
 
 def game_init():
-    global done,lives,score,score_surf
-    #reward = 0
+    global lives,score,score_surf
     screen.fill([255,255,255])    
-    if not done:
-        #myBall.move()
-        screen.blit(myBall.image,myBall.rect)
-        screen.blit(paddle.image,paddle.rect)
-        screen.blit(score_surf,score_pos)
-        for i in range(lives):#画出右上角显示为三条命的球
-            width=screen.get_width()
-            screen.blit(myBall.image,[width-40*i,20])
-        pygame.display.flip()
+    screen.blit(myBall.image,myBall.rect)
+    screen.blit(paddle.image,paddle.rect)
+    screen.blit(score_surf,score_pos)
+    for i in range(lives):#画出右上角显示为三条命的球
+        width=screen.get_width()
+        screen.blit(myBall.image,[width-40*i,20])
+    pygame.display.flip()
     pygame.image.save(screen,"game.jpg") #有改进空间
     state = cv2.imread("game.jpg",0)
     return state
 
 def game_step(action):
-#while running:
-# action: [1 0 0]:向左
-#         [0 1 0]:不动
-#         [0 0 1]:向右
-    global done,lives,score,score_surf,score_one_round
+    global lives,score,score_surf,score_one_round
     
     done_show = False
     reward = 0
@@ -78,19 +69,18 @@ def game_step(action):
         if event.type == pygame.QUIT:
             return -1,-2
 
-    #keys_pressed = pygame.key.get_pressed()                          #change this to trans the mode between random(machine control) and keyboard
-    #if keys_pressed[pygame.K_d] and paddle.rect.centerx < 590:       #change this to trans the mode between random(machine control) and keyboard
-    if action == 0 and paddle.rect.centerx < 590:
+    #keys_pressed = pygame.key.get_pressed()                          #change this to trans the mode between random(machine control) and keyboard control
+    #if keys_pressed[pygame.K_d] and paddle.rect.centerx < 590:       #change this to trans the mode between random(machine control) and keyboard control
+    if action == 0 and paddle.rect.centerx < 590:                     #change this to trans the mode between keyboard control and random(machine control)
         paddle.rect.centerx += offset
     #if keys_pressed[pygame.K_a] and paddle.rect.centerx > 50:        #change this to trans the mode between random(machine control) and keyboard
-    elif action == 2 and paddle.rect.centerx > 50:
+    elif action == 2 and paddle.rect.centerx > 50:                    #change this to trans the mode between keyboard control and random(machine control)
         paddle.rect.centerx -= offset
 
     if pygame.sprite.spritecollide(paddle,ballGroup,False):#检测球与球拍的碰撞
         score= score + 1
         score_one_round = score_one_round + 1 
         score_surf = score_font.render(str(score),1,(0,0,0))
-        print(screen.get_rect().bottom - myBall.rect.bottom)
         if screen.get_rect().bottom - myBall.rect.bottom >= 2:       
             myBall.speed[1] =- myBall.speed[1]                        
             reward = 5                                             
@@ -103,16 +93,15 @@ def game_step(action):
             print("bad")
             reward = 1
             
-    if not done:
-        myBall.move()
-        screen.blit(myBall.image,myBall.rect)
-        screen.blit(paddle.image,paddle.rect)
-        screen.blit(score_surf,score_pos)
-        
-        for i in range(lives):#画出右上角显示为三条命的球
-            width = screen.get_width()
-            screen.blit(myBall.image,[width-40*i,20])
-        pygame.display.flip()
+    myBall.move()
+    screen.blit(myBall.image,myBall.rect)
+    screen.blit(paddle.image,paddle.rect)
+    screen.blit(score_surf,score_pos)
+    
+    for i in range(lives):#画出右上角显示为三条命的球
+        width = screen.get_width()
+        screen.blit(myBall.image,[width-40*i,20])
+    pygame.display.flip()
         
     if myBall.rect.bottom >= screen.get_rect().bottom:#如果球碰到底边就减一条命,是否需要重置球拍位置？
         score_one_round = 0
@@ -120,26 +109,40 @@ def game_step(action):
         reward = -5
         if abs(myBall.rect.centerx - paddle.rect.centerx) <= 100:
             reward = 0 
-            print("yes")
         elif abs(myBall.rect.centerx - paddle.rect.centerx) <= 200:
             reward = -3 
         if lives == 0:#创和绘制最终的分数文本
             f = open("scores.txt","a")   
             f.write("%d \n" % score)
-            reward += -5 #-3 
+            reward += -5 
             lives = 3
             score = 0
             score_surf = score_font.render(str(score),1,(0,0,0))
+            
+            final_text2 = "Game Over"
+            ft2_font = pygame.font.Font(None,70)
+            ft2_surf = ft2_font.render(final_text2,1,(0,0,0))
+            screen.blit(ft2_surf,[screen.get_width()/2-ft2_surf.get_width()/2,100])
+            pygame.display.flip()
+            pygame.time.delay(1000)
+            final_text3 = "Restart"
+            ft3_font = pygame.font.Font(None,70)
+            ft3_surf = ft3_font.render(final_text3,1,(0,0,0))
+            screen.blit(ft3_surf,[screen.get_width()/2-ft3_surf.get_width()/2,200])
+            pygame.display.flip()
+            pygame.time.delay(1000)
+
             myBall.rect.topleft=[50,50]
             myBall.speed = [Ball_horizontal_speed,Ball_vertical_speed]  #Ball speed
             paddle.rect.left,paddle.rect.top=[320,470]
             done_show = True
         else:
-            final_text3 = "left %s lives"%lives
-            ft3_font = pygame.font.Font(None,70)
-            ft3_surf = ft3_font.render(final_text3,1,(0,0,0))
-            screen.blit(ft3_surf,[screen.get_width()/2-ft3_surf.get_width()/2,100])
+            final_text4 = "left %s lives"%lives
+            ft4_font = pygame.font.Font(None,70)
+            ft4_surf = ft4_font.render(final_text4,1,(0,0,0))
+            screen.blit(ft4_surf,[screen.get_width()/2-ft4_surf.get_width()/2,100])
             pygame.display.flip()
+            pygame.time.delay(2000)
             myBall.rect.topleft = [50,50]
             myBall.speed = [Ball_horizontal_speed,Ball_vertical_speed]  #Ball speed
             paddle.rect.left,paddle.rect.top = [320,470]
@@ -156,13 +159,13 @@ def game_step(action):
 def game_stop():
     pygame.quit()  
     
-'''
-game_init()
+# use following code to run game without AI
 
-for i in range(0,10000):
-    action = random.choice([0, 1, 2])
-    a,b,c,d,e = game_step(action)
-    if b == -2:
-        game_stop()
-        break
-'''
+# game_init()
+# for i in range(0,10000):
+#     action = random.choice([0, 1, 2])
+#     a,b,c,d,e = game_step(action)
+#     if b == -2:
+#         game_stop()
+#         break
+
