@@ -46,7 +46,7 @@ class MyNet(nn.Module):
 width_net = 64
 height_net = 48
 store_count = 0
-store_size = 50000
+store_size = 10000
 decline = 0.6
 learning_rate = 0.0001
 learn_time = 0
@@ -59,7 +59,7 @@ start_study = False
 log_dir = './model/RL-pong.pth'
 log_dir2 = './best/best-RL-pong.pth'
 log_dir3 = './best/best-RL-pong-all.pth'
-train = True
+train = False
 
 net1 = MyNet(learning_rate).cuda()
 net2 = MyNet(learning_rate).cuda()
@@ -82,7 +82,7 @@ s = np.concatenate((s,s,s,s),axis = 1)
 s = s / 255.
 for i in range(5000000):
     while True:
-        if random.randint(0,100) < 100*(decline ** (learn_time/10000)):  #if后面的式子表达的意思：训练轮数越多，每次越倾向于选择网络预测值中最大的a作为抉择，而不倾向于随机选择一个抉择
+        if random.randint(0,100) < 100*(decline ** (learn_time/10000)) and train:  #if后面的式子表达的意思：训练轮数越多，每次越倾向于选择网络预测值中最大的a作为抉择，而不倾向于随机选择一个抉择
             a = random.choice([0, 1, 2])
             print("random")
         else:
@@ -94,8 +94,8 @@ for i in range(5000000):
         s_part = s_part / 255.
         s_ = np.concatenate((s[:,1:4,:,:],s_part),axis = 1)
 
-        if (np.all(s_[:,0,:,:] == s_[:,1,:,:]) and np.all(s_[:,0,:,:] == s_[:,2,:,:])):
-            print("3个s")
+        # if (np.all(s_[:,0,:,:] == s_[:,1,:,:]) and np.all(s_[:,0,:,:] == s_[:,2,:,:])):
+        #     print("3个s")
         done = True
         
         store_picture[store_count % store_size][0] = s

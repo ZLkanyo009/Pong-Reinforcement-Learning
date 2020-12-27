@@ -38,7 +38,7 @@ paddle = MyPaddleClass([320,470])
 lives = 3
 score = 0
 score_one_round = 0
-offset = 5     #板子速度
+offset = 10     #板子速度
 score_font = pygame.font.Font(None,50) #创建font对象 50
 score_surf = score_font.render(str(score),1,(0,0,0))
 score_pos = [10,10]
@@ -124,13 +124,13 @@ def game_step(action):
             ft2_surf = ft2_font.render(final_text2,1,(0,0,0))
             screen.blit(ft2_surf,[screen.get_width()/2-ft2_surf.get_width()/2,100])
             pygame.display.flip()
-            pygame.time.delay(1000)
+            #pygame.time.delay(1000)
             final_text3 = "Restart"
             ft3_font = pygame.font.Font(None,70)
             ft3_surf = ft3_font.render(final_text3,1,(0,0,0))
             screen.blit(ft3_surf,[screen.get_width()/2-ft3_surf.get_width()/2,200])
             pygame.display.flip()
-            pygame.time.delay(1000)
+            #pygame.time.delay(1000)
 
             myBall.rect.topleft=[50,50]
             myBall.speed = [Ball_horizontal_speed,Ball_vertical_speed]  #Ball speed
@@ -142,7 +142,7 @@ def game_step(action):
             ft4_surf = ft4_font.render(final_text4,1,(0,0,0))
             screen.blit(ft4_surf,[screen.get_width()/2-ft4_surf.get_width()/2,100])
             pygame.display.flip()
-            pygame.time.delay(2000)
+            #pygame.time.delay(2000)
             myBall.rect.topleft = [50,50]
             myBall.speed = [Ball_horizontal_speed,Ball_vertical_speed]  #Ball speed
             paddle.rect.left,paddle.rect.top = [320,470]
