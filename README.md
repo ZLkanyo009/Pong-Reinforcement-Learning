@@ -10,8 +10,11 @@ Pong-Reinforcement-Learning Here
 
 # How to Run?
 ## Training:  
-set ``istrain = True`` in deep_q_network.py and run with following command:  
-```python deep_q_network.py```
+set ``train = True`` in DDQN_with_Pong.py and run with following command:  
+```python DDQN_with_Pong.py```
 ## Inference:  #
-set ``istrain = False`` in deep_q_network.py and run with following command:  
-```python deep_q_network.py```
+set ``train = False`` in DDQN_with_Pong.py and run with following command:  
+```python DDQN_with_Pong.py```
+
+# Visualization
+![avatar](./assets/Pong.png)
