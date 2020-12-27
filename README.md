@@ -17,4 +17,4 @@ set ``train = False`` in DDQN_with_Pong.py and run with following command:
 ```python DDQN_with_Pong.py```
 
 # Visualization
-![avatar](./assets/Pong.png)
+![Pong](./assets/Pong.png)
