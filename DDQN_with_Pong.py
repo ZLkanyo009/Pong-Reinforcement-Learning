@@ -46,15 +46,15 @@ class MyNet(nn.Module):
 width_net = 64
 height_net = 48
 store_count = 0
-store_size = 5000
+store_size = 50000
 decline = 0.6
 learning_rate = 0.0001
 learn_time = 0
 update_time = 50 # 1000 
 gama = 0.99
-b_size = 32          #每次训练网络，从2000个状态中取1000组来训练
-store_picture = np.zeros((store_size,2,4,height_net,width_net))
-store_other = np.zeros((store_size,3))        #存储2000个状态，其中10个值包括：S_now(4个)，a(下一步抉择1个),S_next(4个),r(对该抉择做出的瞬时reward值)
+b_size = 32          #每次训练网络，从store_size个状态中取32组来训练
+store_picture = np.zeros((store_size,2,4,height_net,width_net)) #存储store_size个state(即game截图)
+store_other = np.zeros((store_size,3))        #存储store_size个用到的值，包括：采取的下一步行动a, 报酬值reward, 表示游戏是否结束的done_show
 start_study = False
 log_dir = './model/RL-pong.pth'
 log_dir2 = './best/best-RL-pong.pth'
@@ -144,7 +144,7 @@ for i in range(5000000):
             b_s_ = torch.Tensor(store_picture[index:index + b_size, 1])
             b_s_ = b_s_.cuda()
             
-            b_a = torch.Tensor(store_other[index:index + b_size, 0:1]).long()  #转为LongTensor：64bit有符号整形| torch.LongTensor| torch.cuda.LongTensor
+            b_a = torch.Tensor(store_other[index:index + b_size, 0:1]).long()  #转为LongTensor
             b_a = b_a.cuda() 
             
             b_r = torch.Tensor(store_other[index:index + b_size, 1:2])
