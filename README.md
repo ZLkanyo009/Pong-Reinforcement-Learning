@@ -3,7 +3,7 @@ Pong-Reinforcement-Learning Here
 
 # Installation Dependencies:
 - python3
-- pytorch
+- pytorch = 1.5.1
 - pygame
 - numpy
 - opencv
